@@ -1,18 +1,39 @@
 
-import { useEffect } from 'react';
-import gsap from 'gsap';
-import Banner from "../components/Banner";
-import Cases from '../components/Cases';
-import Header from "../components/Header";
-import IntroOverlay from "../components/introOverlay";
-
 import "../styles/App.scss";
+import Header from "../components/Header";
+import {Navigation} from '../components/Navigation';
+import { useEffect, useState } from 'react';
+import gsap from 'gsap';
 
-function App() {
+function debounce(fn, ms){
+  let timer;
+  return ()=>{
+    clearTimeout(timer)
+    timer=setTimeout(()=>{
+      timer = null
+      fn.apply(this, arguments)
+    }, ms)
+  }
+}
+
+
+export default function MyApp({ Component, pageProps }) {
+
+  const [dimensions, setDimensions] = useState({
+    height : undefined,
+    width : undefined
+  });
+
 
   useEffect(()=>{
-    let vh = window.innerHeight * .01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    
+
+  if (typeof window !== 'undefined') {
+      window.addEventListener( 'load', ()=>{setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+    })})
+  }
 
     //flashing prevention
     gsap.to('body', 0,  {
@@ -21,54 +42,35 @@ function App() {
       }
     })
 
-    //timeline
-
-    const tl = gsap.timeline();
-    tl.from('.line span', 1.8, {
-      ease: "power4.out",
-      y: 100,
-      delay: 0.5, 
-      skewY:10,
-      stagger:{
-        amount: 0.3
-      }
-    })
-    .to('.overlay-top', 1.6 ,{
-      height:0, 
-      ease: 'expo.inOut',
-      stagger:0.4
-    })
-    .to('.overlay-bottom', 1.6, {
-      width:0,
-      ease: 'expo.inOut',
-      delay: -.8,
-      stagger: {
-        amount : 0.4
-      }
-    })
-    .to('.intro-overlay', 0, {
-      css:{
-        display: 'none'
-      }
-    })
-    .from('case-image img', 1.6, {
-      scale: 1.4, 
-      ease: 'expo.inOut',
-      stagger:{
-        amount: 0.4
-      }
-    })
+    //viewport height calc
+    let vh = dimensions.height * .01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    
 
 
-  }, [])
+    const debouncedHandleResize = debounce(function handleResize(){
+      setDimensions({
+        height : window.innerHeight,
+        width : window.innerWidth
+      })
+    }, 1000)
+
+    window.addEventListener('resize', debouncedHandleResize)
+
+    return ()=>{
+      window.removeEventListener('resize', debouncedHandleResize)
+    }
+    
+  })
+
   return (
-    <div className='App'>
-      <IntroOverlay/>
-      <Header/>
-      <Banner/>
-      <Cases/>
+    <div>
+      <Header dimensions = {dimensions} />
+      <div className= 'App'>
+        <Component {...pageProps} />
+      </div>
+      <Navigation/>
     </div>
-  );
+  )
 }
 
-export default App;

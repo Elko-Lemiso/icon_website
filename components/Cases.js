@@ -1,6 +1,3 @@
-import RightArrow from './assets/arrow-right.svg'
-import LeftArrow from './assets/arrow-left.svg'
-import Image from 'next/image';
 
 const caseStudies =  [
     {
@@ -30,10 +27,10 @@ const Cases = () => {
             <div className="container-fluid">
                 <div className="cases-navigation">
                     <div className="cases-arrow prev disabled">
-                        <LeftArrow/>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     </div>
                     <div className="cases-arrow next">
-                        <RightArrow/>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </div>
                 </div>
                 <div className="row">
