@@ -1,14 +1,22 @@
 import Link from 'next/link'
 import {useState, useEffect} from 'react';
 import gsap from 'gsap'
+import { useRouter } from 'next/router'
 
 let tl = gsap.timeline()
 
 const Header = ({dimensions}) => {
 
     const [menuState, setMenuState] = useState({menuOpened : false});
+    const router = useRouter()
 
-    useEffect(() => {
+      useEffect(() => {
+        
+        const handleRouteChange = (url) => {
+          setMenuState({menuOpened:false})
+        }
+        router.events.on('routeChangeStart', handleRouteChange)
+        
         if (menuState.menuOpened == true) {
             //Run opened menu animation
             tl.to("nav", 0, {
